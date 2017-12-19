@@ -43,6 +43,9 @@ public:
   modify(const std::string& section, const std::string& value);
 
   InfoEditor&
+  add(const std::string& section, const std::string& value);
+
+  InfoEditor&
   remove(const std::string& section);
 
   InfoEditor&
