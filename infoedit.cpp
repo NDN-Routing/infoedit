@@ -50,6 +50,13 @@ InfoEditor::modify(const std::string& section, const std::string& value)
 }
 
 InfoEditor&
+InfoEditor::add(const std::string& section, const std::string& value)
+{
+  m_info.add(section.c_str(), value.c_str());
+  return *this;
+}
+
+InfoEditor&
 InfoEditor::remove(const std::string& section)
 {
   std::size_t pos = section.find_last_of(".");
@@ -102,7 +109,8 @@ main(int argc, char** argv)
     ("help,h",    "print this help message")
     ("file,f",    po::value<std::string>(&configFile), "the file to edit")
     ("section,s", po::value<std::string>(&sectionPath), "the section to modify")
-    ("value,v",   po::value<std::string>(&value), "the value used to modify some section")
+    ("path,p", po::value<std::string>(&sectionPath), "the path to add - can be duplicate")
+    ("value,v",   po::value<std::string>(&value), "the value used to modify some section or add path")
     ("delete,d",  po::value<std::string>(&sectionPath), "the sub tree to delete")
     ("add,a",     po::value<std::string>(&sectionPath), "adds a sub tree")
     ("replace,r", po::value<std::string>(&sectionPath), "replace the sub tree")
@@ -151,6 +159,15 @@ main(int argc, char** argv)
       editor.modify(sectionPath, value);
     }
 
+    if (vm.count("path") > 0) {
+      if (vm.count("value") == 0) {
+        std::cerr << "ERROR: value must be specified" << std::endl;
+        return 1;
+      }
+
+      editor.add(sectionPath, value);
+    }
+
     if (vm.count("delete") > 0) {
       editor.remove(sectionPath);
     }
@@ -171,6 +188,7 @@ main(int argc, char** argv)
     editor.save(configFile);
   }
   catch (...) {
+    std::cerr << "Unable to save the edit to file" << std::endl;
     return 1;
   }
 
