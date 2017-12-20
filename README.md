@@ -93,10 +93,10 @@ OPTIONS:
 ## Sample commands for NLSR ##
 
     ./infoedit -f nlsr.conf -d security.cert-to-publish
-    ./infoedit -f nlsr.conf -p security.cert-to-publish security/root.cert
-    ./infoedit -f nlsr.conf -p security.cert-to-publish security/site.cert
-    ./infoedit -f nlsr.conf -p security.cert-to-publish security/operator.cert
-    ./infoedit -f nlsr.conf -p security.cert-to-publish security/router.cert
+    ./infoedit -f nlsr.conf -p security.cert-to-publish -v security/root.cert
+    ./infoedit -f nlsr.conf -p security.cert-to-publish -v security/site.cert
+    ./infoedit -f nlsr.conf -p security.cert-to-publish -v security/operator.cert
+    ./infoedit -f nlsr.conf -p security.cert-to-publish -v security/router.cert
 
 ### nlsr.conf used in above sample ###
 
