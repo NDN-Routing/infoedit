@@ -7,8 +7,8 @@ infoedit: infoedit.hpp infoedit.cpp
 	$(CXX) -o infoedit -std=c++11 infoedit.cpp -lboost_program_options
 
 install: infoconv infoedit
-	install /usr/local/bin/infoconv infoconv
-	install /usr/local/bin/infoedit infoedit
+	install infoconv /usr/local/bin/infoconv
+	install infoedit /usr/local/bin/infoedit
 
 uninstall:
 	rm /usr/local/bin/infoconv
