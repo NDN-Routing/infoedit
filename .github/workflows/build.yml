@@ -1,0 +1,15 @@
+name: build
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: install dependencies
+        run: |
+          sudo apt-get install libboost-dev libboost-program-options-dev
+      - name: build and install
+        run: |
+          make
+          sudo make install
