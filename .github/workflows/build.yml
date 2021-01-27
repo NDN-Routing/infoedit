@@ -17,3 +17,28 @@ jobs:
         run: |
           make
           sudo make install
+  debian:
+    runs-on: ubuntu-20.04
+    container: debian:buster
+    steps:
+      - name: install tools
+        run: |
+          apt-get update
+          apt-get install -qq --no-install-recommends devscripts equivs gawk git
+      - uses: actions/checkout@v2
+      - name: install dependencies
+        run: |
+          mk-build-deps -ir -t "apt-get -qq --no-install-recommends"
+      - name: prepare changelog
+        run: |
+          debian/nightly-changelog.sh
+        env:
+          DISTRO: buster
+      - name: build package
+        run: |
+          debuild -us -uc
+          mv ../*.deb ~/
+      - uses: actions/upload-artifact@v2
+        with:
+          name: deb
+          path: ~/*.deb

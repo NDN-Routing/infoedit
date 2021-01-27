@@ -1,3 +1,7 @@
+CXX ?= g++
+PREFIX ?= /usr/local
+DESTDIR ?=
+
 all: infoconv infoedit
 
 infoconv: infoconv.cpp
@@ -10,9 +14,10 @@ lint:
 	clang-format-8 -i -style=file *.[hc]pp
 
 install: infoconv infoedit
-	install infoconv /usr/local/bin/infoconv
-	install infoedit /usr/local/bin/infoedit
+	install -d $(DESTDIR)$(PREFIX)/bin
+	install infoconv $(DESTDIR)$(PREFIX)/bin/infoconv
+	install infoedit $(DESTDIR)$(PREFIX)/bin/infoedit
 
 uninstall:
-	rm /usr/local/bin/infoconv
-	rm /usr/local/bin/infoedit
+	rm $(DESTDIR)$(PREFIX)/bin/infoconv
+	rm $(DESTDIR)$(PREFIX)/bin/infoedit

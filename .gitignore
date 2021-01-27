@@ -1,2 +1,7 @@
-infoconv
-infoedit
+/debian/changelog
+/debian/*debhelper*
+/debian/files
+/debian/infoedit
+/debian/infoedit.substvars
+/infoconv
+/infoedit

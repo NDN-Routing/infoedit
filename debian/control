@@ -1,0 +1,14 @@
+Source: infoedit
+Section: utils
+Priority: optional
+Maintainer: Junxiao Shi <deb@mail1.yoursunny.com>
+Build-Depends: debhelper (>= 10),
+               libboost-dev,
+               libboost-program-options-dev
+Standards-Version: 4.5.1
+Homepage: https://github.com/NDN-Routing/infoedit
+
+Package: infoedit
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: command line tools for Boost INFO format
