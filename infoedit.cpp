@@ -14,10 +14,10 @@
  */
 
 #include "infoedit.hpp"
-#include <iostream>
 #include <boost/program_options/options_description.hpp>
-#include <boost/program_options/variables_map.hpp>
 #include <boost/program_options/parsers.hpp>
+#include <boost/program_options/variables_map.hpp>
+#include <iostream>
 
 namespace infoedit {
 
@@ -31,8 +31,7 @@ InfoEditor::load(const std::string& fileName)
 
   try {
     boost::property_tree::info_parser::read_info(input, m_info);
-  }
-  catch (boost::property_tree::info_parser::info_parser_error& error) {
+  } catch (boost::property_tree::info_parser::info_parser_error& error) {
     std::stringstream msg;
     msg << "Failed to parse configuration file";
     msg << " " << error.message() << " line " << error.line();
@@ -62,8 +61,7 @@ InfoEditor::remove(const std::string& section)
   std::size_t pos = section.find_last_of(".");
   if (pos == std::string::npos) {
     m_info.erase(section.c_str());
-  }
-  else {
+  } else {
     boost::optional<boost::property_tree::ptree&> child =
       m_info.get_child_optional(section.substr(0, pos));
     if (child) {
@@ -101,50 +99,45 @@ main(int argc, char** argv)
   std::string value;
 
   namespace po = boost::program_options;
-  po::options_description description("Usage\n"
-                                      "  infoedit [-f file] [-s|d|a|r path] [-v value]\n"
-                                      "Options");
-
-  description.add_options()
-    ("help,h",    "print this help message")
-    ("file,f",    po::value<std::string>(&configFile), "the file to edit")
-    ("section,s", po::value<std::string>(&sectionPath), "the section to modify")
-    ("path,p", po::value<std::string>(&sectionPath), "the path to add - can be duplicate")
-    ("value,v",   po::value<std::string>(&value), "the value used to modify some section or add path")
-    ("delete,d",  po::value<std::string>(&sectionPath), "the sub tree to delete")
-    ("add,a",     po::value<std::string>(&sectionPath), "adds a sub tree")
-    ("replace,r", po::value<std::string>(&sectionPath), "replace the sub tree")
-    ;
+  po::options_description opts("Usage\n"
+                               "  infoedit [-f file] [-s|d|a|r path] [-v value]\n"
+                               "Options");
+  opts.add_options()("help,h", "print this help message");
+  opts.add_options()("file,f", po::value<std::string>(&configFile), "the file to edit");
+  opts.add_options()("section,s", po::value<std::string>(&sectionPath), "the section to modify");
+  opts.add_options()("path,p", po::value<std::string>(&sectionPath),
+                     "the path to add - can be duplicate");
+  opts.add_options()("value,v", po::value<std::string>(&value),
+                     "the value used to modify some section or add path");
+  opts.add_options()("delete,d", po::value<std::string>(&sectionPath), "the sub tree to delete");
+  opts.add_options()("add,a", po::value<std::string>(&sectionPath), "adds a sub tree");
+  opts.add_options()("replace,r", po::value<std::string>(&sectionPath), "replace the sub tree");
 
   po::variables_map vm;
   try {
-      po::store(po::command_line_parser(argc, argv).options(description).run(), vm);
-      po::notify(vm);
-  }
-  catch (const std::exception& e) {
-    std::cerr << "ERROR: " << e.what()
-              << "\n"
-              << description;
+    po::store(po::command_line_parser(argc, argv).options(opts).run(), vm);
+    po::notify(vm);
+  } catch (const std::exception& e) {
+    std::cerr << "ERROR: " << e.what() << "\n" << opts;
     return 1;
   }
 
   if (vm.count("help") > 0) {
-    std::cout << description;
+    std::cout << opts;
     return 0;
   }
 
   if (vm.count("file") == 0) {
     std::cerr << "ERROR: the file to edit should be specified"
               << "\n"
-              << description;
+              << opts;
     return 1;
   }
 
   InfoEditor editor;
   try {
     editor.load(configFile);
-  }
-  catch (const std::exception& e) {
+  } catch (const std::exception& e) {
     std::cerr << "ERROR: " << e.what() << std::endl;
     return 1;
   }
@@ -179,15 +172,13 @@ main(int argc, char** argv)
     if (vm.count("replace") > 0) {
       editor.remove(sectionPath).insert(sectionPath, std::cin);
     }
-  }
-  catch (...) {
+  } catch (...) {
     return 1;
   }
 
   try {
     editor.save(configFile);
-  }
-  catch (...) {
+  } catch (...) {
     std::cerr << "Unable to save the edit to file" << std::endl;
     return 1;
   }

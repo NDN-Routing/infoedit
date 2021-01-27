@@ -10,10 +10,10 @@ static void
 usage()
 {
   std::cerr << "USAGE\n"
-    "  infoconv info2json < config.info > config.json\n"
-    "  infoconv json2info < config.info > config.info\n"
-    "  infoconv info2xml  < config.info > config.xml\n"
-    "  infoconv xml2info  < config.xml  > config.info\n";
+               "  infoconv info2json < config.info > config.json\n"
+               "  infoconv json2info < config.info > config.info\n"
+               "  infoconv info2xml  < config.info > config.xml\n"
+               "  infoconv xml2info  < config.xml  > config.info\n";
 }
 
 static void
@@ -58,17 +58,13 @@ main(int argc, char** argv)
   std::string action(argv[1]);
   if (action == "info2json") {
     info2json();
-  }
-  else if (action == "json2info") {
+  } else if (action == "json2info") {
     json2info();
-  }
-  else if (action == "info2xml") {
+  } else if (action == "info2xml") {
     info2xml();
-  }
-  else if (action == "xml2info") {
+  } else if (action == "xml2info") {
     xml2info();
-  }
-  else {
+  } else {
     usage();
     return 2;
   }
