@@ -1,5 +1,8 @@
 name: build
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   build:
@@ -8,18 +11,19 @@ jobs:
       - uses: actions/checkout@v2
       - name: install dependencies
         run: |
-          sudo apt-get install libboost-dev libboost-program-options-dev
+          sudo apt-get install -y --no-install-recommends libboost-dev libboost-program-options-dev
       - name: check code style
         run: |
           make lint
-          [[ $(git status --porcelain | tee >(cat 1>&2) | wc -l) -eq 0 ]]
+          git diff --exit-code
       - name: build and install
         run: |
           make
           sudo make install
+          sudo make uninstall
   debian:
     runs-on: ubuntu-20.04
-    container: debian:buster
+    container: debian:bullseye
     steps:
       - name: install tools
         run: |
@@ -33,7 +37,7 @@ jobs:
         run: |
           debian/nightly-changelog.sh
         env:
-          DISTRO: buster
+          DISTRO: bullseye
       - name: build package
         run: |
           debuild -us -uc
