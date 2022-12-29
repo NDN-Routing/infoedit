@@ -8,15 +8,15 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
-      - name: install dependencies
+      - uses: actions/checkout@v3
+      - name: Install dependencies
         run: |
           sudo apt-get install -y --no-install-recommends libboost-dev libboost-program-options-dev
-      - name: check code style
+      - name: Check code style
         run: |
           make lint
           git diff --exit-code
-      - name: build and install
+      - name: Build and install
         run: |
           make
           sudo make install
@@ -25,24 +25,24 @@ jobs:
     runs-on: ubuntu-20.04
     container: debian:bullseye
     steps:
-      - name: install tools
+      - name: Install tools
         run: |
           apt-get update
           apt-get install -qq --no-install-recommends devscripts equivs gawk git
-      - uses: actions/checkout@v2
-      - name: install dependencies
+      - uses: actions/checkout@v3
+      - name: Install dependencies
         run: |
           mk-build-deps -ir -t "apt-get -qq --no-install-recommends"
-      - name: prepare changelog
+      - name: Prepare changelog
         run: |
           debian/nightly-changelog.sh
         env:
           DISTRO: bullseye
-      - name: build package
+      - name: Build package
         run: |
           debuild -us -uc
           mv ../*.deb ~/
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: deb
           path: ~/*.deb
