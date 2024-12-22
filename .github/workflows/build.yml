@@ -6,12 +6,12 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install dependencies
         run: |
-          sudo apt-get install -y --no-install-recommends libboost-dev libboost-program-options-dev
+          sudo apt-get install -y --no-install-recommends clang-format-11 libboost-dev libboost-program-options-dev
       - name: Check code style
         run: |
           make lint
@@ -22,27 +22,28 @@ jobs:
           sudo make install
           sudo make uninstall
   debian:
-    runs-on: ubuntu-20.04
-    container: debian:bullseye
+    runs-on: ubuntu-22.04
+    container: debian:bookworm
     steps:
       - name: Install tools
         run: |
           apt-get update
           apt-get install -qq --no-install-recommends devscripts equivs gawk git
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install dependencies
         run: |
           mk-build-deps -ir -t "apt-get -qq --no-install-recommends"
       - name: Prepare changelog
         run: |
+          git config --global --add safe.directory $PWD
           debian/nightly-changelog.sh
         env:
-          DISTRO: bullseye
+          DISTRO: bookworm
       - name: Build package
         run: |
           debuild -us -uc
           mv ../*.deb ~/
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: deb
           path: ~/*.deb
